@@ -42,6 +42,8 @@ window.onload=function(){
 
   document.body.onmouseup = function(e) {
     selecting = false
+
+    getLargestElemInArea (startingCoords.x, endingCoords.x, startingCoords.y, endingCoords.y)
     
     // Remove after half a second, instant removal looks glitchy.
     setTimeout(() => {
@@ -50,4 +52,40 @@ window.onload=function(){
     }, 500)
     
   }
+}
+
+function getLargestElemInArea() {
+  console.log('startX', startingCoords.x)
+  console.log('endX', endingCoords.x)
+  console.log('startingCoords.Y', startingCoords.y)
+  console.log('endingCoords.y', endingCoords.y)
+  for (let x = startingCoords.x; x <= endingCoords.x; x = x + 10) {
+    for (let y = startingCoords.y; y <= endingCoords.y; y = y + 10) {
+      let elemsFromPoint = document.elementsFromPoint(x, y)
+      let section = elemsFromPoint.find(el => el.nodeName === 'SECTION')
+      console.log('section')
+      if (section && isInArea(section)) {
+        console.log('isInArea', isInArea(section))
+        section.classList.add('border-2', 'border-red-400')
+      }
+    }
+  }
+  let test = document.elementsFromPoint(startingCoords.x, startingCoords.y)
+
+  console.log('test', test)
+}
+
+function isInArea(element) {
+  let position = element.getBoundingClientRect();
+
+  console.log('position.x >= startingCoords.x && position.y >= startingCoords.y ', position.x >= startingCoords.x && position.y >= startingCoords.y )
+  console.log('position.x + position.width <= endingCoords.x', position.x + position.width <= endingCoords.x)
+  console.log('position.y + position.height <= endingCoords.y', position.y + position.height <= endingCoords.y)
+  if (position.x >= startingCoords.x && position.y >= startingCoords.y 
+    && position.x + position.width <= endingCoords.x
+    && position.y + position.height <= endingCoords.y) {
+      return true
+    }
+    console.log('position', position)
+    return false
 }
