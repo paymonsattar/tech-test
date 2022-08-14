@@ -41,7 +41,13 @@ window.onload=function(){
   }
 
   document.body.onmouseup = function(e) {
-
     selecting = false
+    
+    // Remove after half a second, instant removal looks glitchy.
+    setTimeout(() => {
+      selectionElem.remove()
+      overlayTextElem.remove()
+    }, 500)
+    
   }
 }
