@@ -5,6 +5,10 @@ let startingCoords = {}
 let endingCoords = {}
 let selecting = false
 let elemsInArea = []
+let topLeftSelectX
+let topLeftSelectY
+let bottomRightSelectX
+let bottomRightSelectY
 
 window.onload=function(){
   displayOverlay()
@@ -32,13 +36,17 @@ window.onload=function(){
   document.body.onmouseup = function(e) {
     selecting = false
 
-    getLargestElemInArea()
+    topLeftSelectX = startingCoords.x <= endingCoords.x ? startingCoords.x : endingCoords.x
+    topLeftSelectY = startingCoords.y <= endingCoords.y ? startingCoords.y : endingCoords.y
 
+    bottomRightSelectX = endingCoords.x >= startingCoords.x ? endingCoords.x : startingCoords.x
+    bottomRightSelectY = endingCoords.y >= startingCoords.y ? endingCoords.y : startingCoords.y
+
+    getLargestElemInArea()
     addBorderToLargestElem()
 
     selectionElem.remove()
     overlayTextElem.remove()
-    
   }
 }
 
@@ -70,8 +78,8 @@ function displayOverlay() {
 }
 
 function getLargestElemInArea() {
-  for (let x = startingCoords.x; x <= endingCoords.x; x += 10) {
-    for (let y = startingCoords.y; y <= endingCoords.y; y += 10) {
+  for (let x = topLeftSelectX; x <= bottomRightSelectX; x += 10) {
+    for (let y = topLeftSelectY; y <= bottomRightSelectY; y += 10) {
       let elemsFromPoint = document.elementsFromPoint(x - window.pageXOffset, y - window.pageYOffset)
       elemsFromPoint.forEach(el => {
         if(isInArea(el) && !elemListIncludes(el)) {
@@ -85,9 +93,9 @@ function getLargestElemInArea() {
 function isInArea(element) {
   let position = element.getBoundingClientRect();
 
-  return position.x + window.pageXOffset >= startingCoords.x && position.y + window.pageYOffset >= startingCoords.y 
-    && position.x + window.pageXOffset + position.width <= endingCoords.x
-    && position.y + window.pageYOffset + position.height <= endingCoords.y
+  return position.x + window.pageXOffset >= topLeftSelectX && position.y + window.pageYOffset >= topLeftSelectY 
+    && position.x + window.pageXOffset + position.width <= bottomRightSelectX
+    && position.y + window.pageYOffset + position.height <= bottomRightSelectY
 }
 
 function elemListIncludes(el) {
