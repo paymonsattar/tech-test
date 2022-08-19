@@ -32,7 +32,7 @@ window.onload=function(){
   document.body.onmouseup = function(e) {
     selecting = false
 
-    getLargestElemInArea(startingCoords.x, endingCoords.x, startingCoords.y, endingCoords.y)
+    getLargestElemInArea()
 
     addBorderToLargestElem()
 
@@ -43,7 +43,6 @@ window.onload=function(){
 }
 
 window.onkeypress = function(event) {
-  console.log(event.keyCode)
   if (event.keyCode === 81) {
      displayOverlay()
   }
@@ -71,10 +70,9 @@ function displayOverlay() {
 }
 
 function getLargestElemInArea() {
-  for (let x = startingCoords.x; x <= endingCoords.x; x = x + 10) {
-    for (let y = startingCoords.y; y <= endingCoords.y; y = y + 10) {
-      let elemsFromPoint = document.elementsFromPoint(x, y)
-
+  for (let x = startingCoords.x; x <= endingCoords.x; x += 10) {
+    for (let y = startingCoords.y; y <= endingCoords.y; y += 10) {
+      let elemsFromPoint = document.elementsFromPoint(x - window.pageXOffset, y - window.pageYOffset)
       elemsFromPoint.forEach(el => {
         if(isInArea(el) && !elemListIncludes(el)) {
           elemsInArea.push(el)
@@ -87,9 +85,9 @@ function getLargestElemInArea() {
 function isInArea(element) {
   let position = element.getBoundingClientRect();
 
-  return position.x >= startingCoords.x && position.y >= startingCoords.y 
-    && position.x + position.width <= endingCoords.x
-    && position.y + position.height <= endingCoords.y
+  return position.x + window.pageXOffset >= startingCoords.x && position.y + window.pageYOffset >= startingCoords.y 
+    && position.x + window.pageXOffset + position.width <= endingCoords.x
+    && position.y + window.pageYOffset + position.height <= endingCoords.y
 }
 
 function elemListIncludes(el) {
